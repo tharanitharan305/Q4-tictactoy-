@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tic Tac Toe</title>
+    <style>
+        #board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 5px;
+            margin: 0 auto;
+            margin-top: 50px;
+            text-align: center;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            font-size: 36px;
+            border: 1px solid #000;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tic Tac Toe</h1>
+    <div id="board"></div>
+    <div id="result"></div>
+
+    <script>
+        const board = document.getElementById("board");
+        const result = document.getElementById("result");
+        let currentPlayer = "X";
+        let boardState = ["", "", "", "", "", "", "", "", ""];
+
+        function checkWin() {
+            const winCombinations = [
+                [0, 1, 2],
+                [3, 4, 5],
+                [6, 7, 8],
+                [0, 3, 6],
+                [1, 4, 7],
+                [2, 5, 8],
+                [0, 4, 8],
+                [2, 4, 6],
+            ];
+
+            for (const combo of winCombinations) {
+                const [a, b, c] = combo;
+                if (
+                    boardState[a] &&
+                    boardState[a] === boardState[b] &&
+                    boardState[a] === boardState[c]
+                ) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        function checkDraw() {
+            return boardState.every((cell) => cell !== "");
+        }
+
+        function handleClick(event) {
+            const cellIndex = event.target.dataset.index;
+
+            if (!boardState[cellIndex]) {
+                boardState[cellIndex] = currentPlayer;
+                event.target.textContent = currentPlayer;
+                event.target.style.pointerEvents = "none";
+
+                if (checkWin()) {
+                    result.textContent = `${currentPlayer} wins!`;
+                    board.style.pointerEvents = "none";
+                } else if (checkDraw()) {
+                    result.textContent = "It's a draw!";
+                } else {
+                    currentPlayer = currentPlayer === "X" ? "O" : "X";
+                }
+            }
+        }
+
+        for (let i = 0; i < 9; i++) {
+            const cell = document.createElement("div");
+            cell.classList.add("cell");
+            cell.dataset.index = i;
+            cell.addEventListener("click", handleClick);
+            board.appendChild(cell);
+        }
+    </script>
+</body>
+</html>
